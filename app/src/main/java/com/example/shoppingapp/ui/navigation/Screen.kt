@@ -1,4 +1,4 @@
-package com.example.shoppingapp.navigation
+package com.example.shoppingapp.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
