@@ -68,7 +68,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.fragment)
     implementation (libs.hilt.android)
     kapt (libs.hilt.compiler)
-    implementation(libs.androidx.material)
+
 
 
 
