@@ -5,4 +5,7 @@
     <string name="bag">Bag</string>
     <string name="account">Account</string>
     <string name="favorites">Favorites</string>
+    <string name="search_products">Search products</string>
+    <string name="search">Search</string>
+    <string name="scan_barcode">Scan barcode</string>
 </resources>
