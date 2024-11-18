@@ -34,9 +34,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        // 如果需要 Java 的警告設定，這裡可以改用 lintOptions
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        // 啟用所有警告作為錯誤
+        allWarningsAsErrors = false // 如果需要更嚴格，可以改為 true
+        freeCompilerArgs += arrayOf("-Xlint:deprecation")
+
     }
     buildFeatures {
         compose = true
