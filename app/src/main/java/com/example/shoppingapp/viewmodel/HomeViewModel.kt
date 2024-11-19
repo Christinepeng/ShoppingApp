@@ -1,5 +1,6 @@
 package com.example.shoppingapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppingapp.model.Product
@@ -26,7 +27,10 @@ class HomeViewModel @Inject constructor(
 
     fun onSearchClicked() {
         viewModelScope.launch {
-            val results = productRepository.searchProducts(_query.value)
+            val currentQuery = _query.value
+            Log.d("HomeViewModel", "Searching for query: $currentQuery")
+            val results = productRepository.searchProducts(currentQuery)
+            Log.d("HomeViewModel", "Search results: $results")
             _searchResults.value = results
         }
     }

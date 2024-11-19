@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SettingsOverscan
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,8 +33,8 @@ fun SearchBar(
         placeholder = { Text(text = stringResource(R.string.search_products)) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .padding(8.dp),
+            .height(64.dp)
+            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
         leadingIcon = {
             IconButton(onClick = onSearchClicked) {
                 Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search))
