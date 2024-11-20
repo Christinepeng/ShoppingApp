@@ -75,6 +75,7 @@ dependencies {
     kapt (libs.hilt.compiler)
 
     implementation(libs.androidx.material.icons.extended)
+    implementation ("com.google.mlkit:barcode-scanning:17.0.2")
 
 
 
