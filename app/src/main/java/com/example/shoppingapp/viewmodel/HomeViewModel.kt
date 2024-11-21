@@ -21,6 +21,8 @@ class HomeViewModel @Inject constructor(
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
+    private val _shouldFetchSuggestions = MutableStateFlow(true)
+
     private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList())
     val searchSuggestions: StateFlow<List<String>> = _searchSuggestions.asStateFlow()
 
@@ -28,13 +30,14 @@ class HomeViewModel @Inject constructor(
     val searchResults: StateFlow<List<Product>> = _searchResults.asStateFlow()
 
     init {
-        // 当用户输入发生变化时，获取搜索建议
         viewModelScope.launch {
-            _query
-                .debounce(300) // 添加防抖，减少请求次数
-                .filter { it.isNotEmpty() }
-                .collect { query ->
-                    // 获取搜索建议（这里我们使用商品标题作为建议）
+            combine(_query, _shouldFetchSuggestions) { query, shouldFetch ->
+                Pair(query, shouldFetch)
+            }
+                .debounce(300)
+                .filter { it.first.isNotEmpty() && it.second }
+                .collect { (query, _) ->
+                    // 获取搜索建议
                     val results = productRepository.searchProducts(query)
                     val suggestions = results.map { it.title }
                     _searchSuggestions.value = suggestions
@@ -44,18 +47,23 @@ class HomeViewModel @Inject constructor(
 
     fun onQueryChanged(newQuery: String) {
         _query.value = newQuery
+        _shouldFetchSuggestions.value = true // 用户手动输入，允许获取推荐列表
     }
 
     fun onSuggestionClicked(suggestion: String) {
+        _shouldFetchSuggestions.value = false // 禁止获取推荐列表
         _query.value = suggestion
+        _searchSuggestions.value = emptyList() // 清空推荐列表
         onSearchClicked()
     }
 
     fun onSearchClicked() {
+        _shouldFetchSuggestions.value = false // 禁止获取推荐列表
         viewModelScope.launch {
             val currentQuery = _query.value
             val results = productRepository.searchProducts(currentQuery)
             _searchResults.value = results
+            _searchSuggestions.value = emptyList() // 清空推荐列表
         }
     }
 
