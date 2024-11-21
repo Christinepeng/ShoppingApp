@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,12 +21,16 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.shoppingapp.ui.components.ProductItem
 import com.example.shoppingapp.ui.components.SearchBar
+import com.example.shoppingapp.ui.navigation.Screen
 import com.example.shoppingapp.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
     val query by viewModel.query.collectAsState()
+    val searchSuggestions by viewModel.searchSuggestions.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
 
     val context = LocalContext.current
@@ -62,23 +67,50 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             onBarcodeScanClicked = { // 请求相机权限
                 permissionLauncher.launch(Manifest.permission.CAMERA) }
         )
-
-        // 可选：显示拍摄的图像
-        capturedImage?.let { bitmap ->
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(8.dp)
-            )
-        }
-
-        LazyColumn {
-            items(searchResults) { product ->
-                Text(text = product.name)
+        // 显示搜索建议
+        if (searchSuggestions.isNotEmpty()) {
+            LazyColumn {
+                items(searchSuggestions) { suggestion ->
+                    Text(
+                        text = suggestion,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModel.onSuggestionClicked(suggestion)
+                            }
+                            .padding(8.dp)
+                    )
+                }
             }
         }
+
+        // 显示搜索结果
+        if (searchResults.isNotEmpty()) {
+            LazyColumn {
+                items(searchResults) { product ->
+                    ProductItem(product = product, onClick = {
+                        navController.navigate(Screen.ProductDetail.route + "/${product.id}")
+                    })
+                }
+            }
+        }
+
+//        // 可选：显示拍摄的图像
+//        capturedImage?.let { bitmap ->
+//            Image(
+//                bitmap = bitmap.asImageBitmap(),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(200.dp)
+//                    .padding(8.dp)
+//            )
+//        }
+
+//        LazyColumn {
+//            items(searchResults) { product ->
+//                Text(text = product.name)
+//            }
+//        }
     }
 }

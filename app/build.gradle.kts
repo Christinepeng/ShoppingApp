@@ -74,8 +74,17 @@ dependencies {
     implementation (libs.hilt.android)
     kapt (libs.hilt.compiler)
 
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // 或者使用 Moshi
+
+    // Hilt
+    implementation ("com.google.dagger:hilt-android:2.44")
+    kapt ("com.google.dagger:hilt-compiler:2.44")
+
     implementation(libs.androidx.material.icons.extended)
     implementation ("com.google.mlkit:barcode-scanning:17.0.2")
+    implementation ("io.coil-kt:coil-compose:2.3.0")
 
 
 

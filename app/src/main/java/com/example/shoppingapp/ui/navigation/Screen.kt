@@ -10,8 +10,13 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.shoppingapp.R
 
-sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
+sealed class Screen(
+    val route: String,
+    @StringRes val resourceId: Int? = null,
+    val icon: ImageVector? = null)
+{
     object Home : Screen("home", R.string.home, Icons.Default.Home)
+    object ProductDetail : Screen("productDetail")
     object Shop : Screen("shop", R.string.shop, Icons.Default.Search)
     object Favorites : Screen("favorites", R.string.favorites, Icons.Default.Favorite)
     object Bag : Screen("bag", R.string.bag, Icons.Default.ShoppingCart)

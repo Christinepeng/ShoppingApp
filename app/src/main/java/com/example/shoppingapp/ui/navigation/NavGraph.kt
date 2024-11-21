@@ -9,6 +9,7 @@ import com.example.shoppingapp.ui.screens.AccountScreen
 import com.example.shoppingapp.ui.screens.BagScreen
 import com.example.shoppingapp.ui.screens.FavoritesScreen
 import com.example.shoppingapp.ui.screens.HomeScreen
+import com.example.shoppingapp.ui.screens.ProductDetailScreen
 import com.example.shoppingapp.ui.screens.ShopScreen
 
 @Composable
@@ -18,7 +19,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         startDestination = Screen.Home.route,
         modifier = modifier
     ) {
-        composable(Screen.Home.route) { HomeScreen() }
+        composable(Screen.Home.route) { HomeScreen(navController) }
+        composable(Screen.ProductDetail.route + "/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            ProductDetailScreen(productId = productId)
+        }
         composable(Screen.Shop.route) { ShopScreen() }
         composable(Screen.Favorites.route) { FavoritesScreen() }
         composable(Screen.Bag.route) { BagScreen() }
