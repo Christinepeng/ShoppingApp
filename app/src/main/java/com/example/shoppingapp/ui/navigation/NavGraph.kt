@@ -3,8 +3,10 @@ package com.example.shoppingapp.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.shoppingapp.ui.screens.AccountScreen
 import com.example.shoppingapp.ui.screens.BagScreen
 import com.example.shoppingapp.ui.screens.FavoritesScreen
@@ -20,7 +22,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         composable(Screen.Home.route) { HomeScreen(navController) }
-        composable(Screen.ProductDetail.route + "/{productId}") { backStackEntry ->
+        composable(
+            route = Screen.ProductDetail.route + "/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")
             ProductDetailScreen(productId = productId)
         }
