@@ -86,4 +86,10 @@ class HomeViewModel @Inject constructor(
             }
     }
 
+    fun resetState() {
+        _query.value = ""
+        _shouldFetchSuggestions.value = false
+        _searchSuggestions.value = emptyList()
+        _searchResults.value = emptyList()
+    }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shoppingapp.ui.components.ProductItem
 import com.example.shoppingapp.ui.components.SearchBar
 import com.example.shoppingapp.ui.navigation.Screen
@@ -45,6 +46,14 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             // 在这里处理图像，例如扫描条码
             // 您可以将图像传递给 ViewModel 进行进一步处理
             viewModel.onImageCaptured(bitmap)
+        }
+    }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(currentBackStackEntry) {
+        if (currentBackStackEntry?.destination?.route == Screen.Home.route) {
+            viewModel.resetState()
         }
     }
 

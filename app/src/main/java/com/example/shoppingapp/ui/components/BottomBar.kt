@@ -7,12 +7,15 @@ import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shoppingapp.ui.navigation.Screen
+import com.example.shoppingapp.viewmodel.HomeViewModel
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -26,7 +29,10 @@ fun BottomBar(navController: NavController) {
     NavigationBar {
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStackEntry?.destination
+
         items.forEach { screen ->
+            val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+
             NavigationBarItem(
                 icon = {
                     screen.icon?.let {
@@ -38,14 +44,13 @@ fun BottomBar(navController: NavController) {
                         Text(stringResource(it))
                     }
                 },
-                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                            inclusive = true
                         }
                         launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )
