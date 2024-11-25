@@ -83,4 +83,12 @@ class ShopViewModel @Inject constructor(
                 // 处理错误
             }
     }
+
+    fun resetState() {
+        _query.value = ""
+        _shouldFetchSuggestions.value = false
+        _searchSuggestions.value = emptyList()
+        _searchResults.value = emptyList()
+    }
+
 }

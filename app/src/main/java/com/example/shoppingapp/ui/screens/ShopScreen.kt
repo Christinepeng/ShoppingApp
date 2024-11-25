@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shoppingapp.ui.components.SearchContent
 import com.example.shoppingapp.ui.navigation.Screen
 import com.example.shoppingapp.viewmodel.ShopViewModel
@@ -13,6 +14,14 @@ fun ShopScreen(navController: NavController, viewModel: ShopViewModel = hiltView
     val query by viewModel.query.collectAsState()
     val searchSuggestions by viewModel.searchSuggestions.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(currentBackStackEntry) {
+        if (currentBackStackEntry?.destination?.route == Screen.Shop.route) {
+            viewModel.resetState()
+        }
+    }
 
     SearchContent(
         query = query,
