@@ -29,7 +29,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             val productId = backStackEntry.arguments?.getString("productId")
             ProductDetailScreen(productId = productId)
         }
-        composable(Screen.Shop.route) { ShopScreen() }
+        composable(Screen.Shop.route) { ShopScreen(navController) }
         composable(Screen.Favorites.route) { FavoritesScreen() }
         composable(Screen.Bag.route) { BagScreen() }
         composable(Screen.Account.route) { AccountScreen() }

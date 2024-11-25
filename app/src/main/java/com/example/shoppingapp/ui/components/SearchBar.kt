@@ -8,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SettingsOverscan
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -25,7 +24,7 @@ fun SearchBar(
     query: String,
     onQueryChanged: (String) -> Unit,
     onSearchClicked: () -> Unit,
-    onBarcodeScanClicked: () -> Unit
+    onBarcodeScanClicked: (() -> Unit)? = null
 ) {
     TextField(
         value = query,
@@ -41,8 +40,10 @@ fun SearchBar(
             }
         },
         trailingIcon = {
-            IconButton(onClick = onBarcodeScanClicked) {
-                Icon(imageVector = Icons.Default.CameraAlt, contentDescription = stringResource(R.string.scan_barcode))
+            onBarcodeScanClicked?.let {
+                IconButton(onClick = it) {
+                    Icon(imageVector = Icons.Default.CameraAlt, contentDescription = stringResource(R.string.scan_barcode))
+                }
             }
         },
         singleLine = true,

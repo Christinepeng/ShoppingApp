@@ -1,31 +1,30 @@
 package com.example.shoppingapp.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
+import android.graphics.Bitmap
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.shoppingapp.ui.components.SearchBar
+import androidx.navigation.NavController
+import com.example.shoppingapp.ui.components.SearchContent
+import com.example.shoppingapp.ui.navigation.Screen
 import com.example.shoppingapp.viewmodel.ShopViewModel
 
 @Composable
-fun ShopScreen(viewModel: ShopViewModel = hiltViewModel()) {
+fun ShopScreen(navController: NavController, viewModel: ShopViewModel = hiltViewModel()) {
     val query by viewModel.query.collectAsState()
+    val searchSuggestions by viewModel.searchSuggestions.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
 
-    Column {
-        SearchBar(
-            query = query,
-            onQueryChanged = { viewModel.onQueryChanged(it) },
-            onSearchClicked = { viewModel.onSearchClicked() },
-            onBarcodeScanClicked = { viewModel.onBarcodeScanClicked() }
-        )
-
-        LazyColumn {
-            items(searchResults) { product ->
-                Text(text = product.name)
-            }
-        }
-    }
+    SearchContent(
+        query = query,
+        onQueryChanged = { viewModel.onQueryChanged(it) },
+        onSearchClicked = { viewModel.onSearchClicked() },
+        onImageCaptured = { bitmap -> viewModel.onImageCaptured(bitmap) },
+        searchSuggestions = searchSuggestions,
+        onSuggestionClicked = { suggestion -> viewModel.onSuggestionClicked(suggestion) },
+        searchResults = searchResults,
+        onProductClicked = { product ->
+            navController.navigate(Screen.ProductDetail.route + "/${product.id}")
+        },
+        showBarcodeScanner = true // 如果需要条码扫描功能，设为 true
+    )
 }
