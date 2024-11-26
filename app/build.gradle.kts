@@ -40,7 +40,7 @@ android {
         jvmTarget = "1.8"
         // 啟用所有警告作為錯誤
         allWarningsAsErrors = false // 如果需要更嚴格，可以改為 true
-        freeCompilerArgs += arrayOf("-Xlint:deprecation")
+//        freeCompilerArgs += arrayOf("-Xlint:deprecation")
 
     }
     buildFeatures {
