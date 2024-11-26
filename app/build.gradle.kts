@@ -75,21 +75,30 @@ dependencies {
     kapt (libs.hilt.compiler)
 
     // Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // 或者使用 Moshi
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson) // 或者使用 Moshi
 
     // Hilt
-    implementation ("com.google.dagger:hilt-android:2.44")
-    kapt ("com.google.dagger:hilt-compiler:2.44")
+    implementation (libs.hilt.android.v244)
+    kapt (libs.hilt.compiler.v244)
 
     implementation(libs.androidx.material.icons.extended)
-    implementation ("com.google.mlkit:barcode-scanning:17.0.2")
-    implementation ("io.coil-kt:coil-compose:2.3.0")
-
+    implementation (libs.barcode.scanning)
+    implementation (libs.coil.compose)
+    implementation (libs.kotlin.stdlib)
 
 
 
     testImplementation(libs.junit)
+    testImplementation (libs.androidx.core.testing)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.mockito.core)
+    testImplementation (libs.mockito.kotlin)
+    // 可选断言库
+    testImplementation (libs.truth)
+
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
