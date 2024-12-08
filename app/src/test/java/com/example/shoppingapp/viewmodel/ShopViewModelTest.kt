@@ -12,7 +12,7 @@
 //import org.mockito.kotlin.*
 //
 //@ExperimentalCoroutinesApi
-//class HomeViewModelTest {
+//class ShopViewModelTest {
 //
 //    @get:Rule
 //    val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -23,20 +23,20 @@
 //    // Mock 的 ProductRepository
 //    private val productRepository: ProductRepository = mock()
 //
-//    private lateinit var viewModel: HomeViewModel
+//    private lateinit var viewModel: ShopViewModel
 //
 //    @Test
 //    fun when_query_changes_search_suggestions_are_updated() = runTest(testDispatcher) {
 //        // 准备测试数据
-//        val query = "test"
+//        val query = "shoes"
 //        val products = listOf(
-//            Product(id = "1", name = "Test Product 1", title = "Test Product 1", price = 10.0, thumbnail = ""),
-//            Product(id = "2", name = "Test Product 2", title = "Test Product 2", price = 20.0, thumbnail = "")
+//            Product(id = "1", name = "Running Shoes", title = "Running Shoes", price = 50.0, thumbnail = ""),
+//            Product(id = "2", name = "Basketball Shoes", title = "Basketball Shoes", price = 80.0, thumbnail = "")
 //        )
 //        whenever(productRepository.searchProducts(query)).thenReturn(products)
 //
 //        // 初始化 ViewModel
-//        viewModel = HomeViewModel(productRepository)
+//        viewModel = ShopViewModel(productRepository)
 //
 //        // 设置查询
 //        viewModel.onQueryChanged(query)
@@ -48,20 +48,20 @@
 //        val suggestions = viewModel.searchSuggestions.first()
 //
 //        // 验证建议列表是否正确
-//        assertEquals(listOf("Test Product 1", "Test Product 2"), suggestions)
+//        assertEquals(listOf("Running Shoes", "Basketball Shoes"), suggestions)
 //    }
 //
 //    @Test
 //    fun onSearchClicked_updates_searchResults() = runTest(testDispatcher) {
 //        // 准备测试数据
-//        val query = "test"
+//        val query = "shoes"
 //        val products = listOf(
-//            Product(id = "1", name = "Test Product 1", title = "Test Product 1", price = 10.0, thumbnail = "")
+//            Product(id = "1", name = "Running Shoes", title = "Running Shoes", price = 50.0, thumbnail = "")
 //        )
 //        whenever(productRepository.searchProducts(query)).thenReturn(products)
 //
 //        // 初始化 ViewModel
-//        viewModel = HomeViewModel(productRepository)
+//        viewModel = ShopViewModel(productRepository)
 //
 //        // 设置查询并执行搜索
 //        viewModel.onQueryChanged(query)
@@ -80,10 +80,10 @@
 //    @Test
 //    fun resetState_clears_all_states() = runTest(testDispatcher) {
 //        // 初始化 ViewModel
-//        viewModel = HomeViewModel(productRepository)
+//        viewModel = ShopViewModel(productRepository)
 //
 //        // 设置一些状态
-//        viewModel.onQueryChanged("test")
+//        viewModel.onQueryChanged("shoes")
 //        viewModel.onSearchClicked()
 //
 //        // 重置状态

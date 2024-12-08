@@ -22,14 +22,15 @@ fun ProductDetailScreen(productId: String?) {
         Column(modifier = Modifier.padding(16.dp)) {
             // 显示商品图片
             if (product.pictures.isNotEmpty()) {
-                val imageUrl = product.pictures[0].url
+                val imageUrl = product.pictures.firstOrNull()?.url ?: product.thumbnail
                 Image(
                     painter = rememberAsyncImagePainter(imageUrl),
                     contentDescription = product.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    contentScale = ContentScale.Crop
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                    contentScale = ContentScale.Crop,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))

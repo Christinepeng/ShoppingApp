@@ -8,20 +8,19 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProductApiService {
-
     @GET("sites/MLA/search")
     suspend fun searchProducts(
-        @Query("q") query: String
+        @Query("q") query: String,
     ): ProductResponse
 
     @GET("items/{id}")
     suspend fun getProductDetail(
-        @Path("id") productId: String
+        @Path("id") productId: String,
     ): ProductDetailResponse
 
     // 添加获取商品描述的方法
     @GET("items/{id}/description")
     suspend fun getProductDescription(
-        @Path("id") productId: String
+        @Path("id") productId: String,
     ): ProductDescriptionResponse
 }

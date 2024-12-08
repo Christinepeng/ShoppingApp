@@ -5,11 +5,11 @@ data class ProductDetailResponse(
     val title: String,
     val price: Double,
     val pictures: List<Picture>,
-    val description: String?, // 需要额外的 API 获取描述
-    // 添加其他需要的字段
+    val description: String?,
+    val thumbnail: String?,
 )
 
 data class Picture(
     val id: String,
-    val url: String
+    val url: String,
 )

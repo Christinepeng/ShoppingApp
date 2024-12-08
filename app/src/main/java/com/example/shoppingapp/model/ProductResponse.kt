@@ -1,14 +1,15 @@
 package com.example.shoppingapp.model
 
+import com.google.gson.annotations.SerializedName
+
 data class ProductResponse(
-    val results: List<Product>
+    val results: List<Product>,
 )
 
 data class Product(
     val id: String,
-    val name: String,
-    val title: String,
+    val name: String?,
+    val title: String?,
     val price: Double,
-    val thumbnail: String
-    // 添加其他需要的字段
+    @SerializedName("thumbnail") val thumbnail: String?,
 )

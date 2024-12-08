@@ -24,16 +24,17 @@ fun SearchBar(
     query: String,
     onQueryChanged: (String) -> Unit,
     onSearchClicked: () -> Unit,
-    onBarcodeScanClicked: (() -> Unit)? = null
+    onBarcodeScanClicked: (() -> Unit)? = null,
 ) {
     TextField(
         value = query,
         onValueChange = onQueryChanged,
         placeholder = { Text(text = stringResource(R.string.search_products)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
         leadingIcon = {
             IconButton(onClick = onSearchClicked) {
                 Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search))
@@ -47,13 +48,15 @@ fun SearchBar(
             }
         },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                onSearchClicked()
-            }
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    onSearchClicked()
+                },
+            ),
     )
 }
