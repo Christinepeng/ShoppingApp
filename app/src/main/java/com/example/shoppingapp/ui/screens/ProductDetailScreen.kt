@@ -13,10 +13,21 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.shoppingapp.viewmodel.ProductDetailViewModel
 
 @Composable
-fun ProductDetailScreen(productId: String?) {
+fun ProductDetailScreen(
+    productId: String?,
+    onBack: () -> Unit,
+) {
     val viewModel: ProductDetailViewModel = hiltViewModel()
     val productDetail by viewModel.productDetail.collectAsState()
 
+    // 在屏幕首次加载时触发数据加载
+    LaunchedEffect(productId) {
+        if (productId != null) {
+            viewModel.loadProductDetail(productId)
+        }
+    }
+
+    // UI展示逻辑保持不变
     if (productDetail != null) {
         val product = productDetail!!
         Column(modifier = Modifier.padding(16.dp)) {
@@ -25,7 +36,7 @@ fun ProductDetailScreen(productId: String?) {
                 val imageUrl = product.pictures.firstOrNull()?.url ?: product.thumbnail
                 Image(
                     painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = product.title,
+                    contentDescription = product.title ?: "Product Image",
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -35,7 +46,7 @@ fun ProductDetailScreen(productId: String?) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             // 显示商品标题
-            Text(text = product.title, style = MaterialTheme.typography.titleLarge)
+            Text(text = product.title ?: "No Title", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(8.dp))
             // 显示商品价格
             Text(text = "价格：$${product.price}", style = MaterialTheme.typography.bodyLarge)

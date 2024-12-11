@@ -12,8 +12,10 @@ class ProductRepositoryImpl
     ) : ProductRepository {
         override suspend fun searchProducts(query: String): List<Product> {
             val response = apiService.searchProducts(query)
+            // 如果 response.results 是可空的，使用 ?: emptyList()
+            val results = response.results ?: emptyList()
 
-            return response.results.map { product ->
+            return results.map { product ->
                 val originalThumbnail = product.thumbnail
                 val updatedThumbnail =
                     if (originalThumbnail?.startsWith("http://") == true) {
@@ -38,9 +40,9 @@ class ProductRepositoryImpl
             val detail = apiService.getProductDetail(productId)
             val descriptionResponse = apiService.getProductDescription(productId)
 
-            // 对pictures中url进行http->https替换
+            // 对 pictures 中 url 进行 http -> https 替换
             val updatedPictures =
-                detail.pictures.map { picture ->
+                detail.pictures.orEmpty().map { picture ->
                     val updatedUrl =
                         if (picture.url.startsWith("http://")) {
                             picture.url.replace("http://", "https://")

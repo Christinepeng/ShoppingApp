@@ -27,7 +27,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -41,7 +41,6 @@ android {
         // 啟用所有警告作為錯誤
         allWarningsAsErrors = false // 如果需要更嚴格，可以改為 true
 //        freeCompilerArgs += arrayOf("-Xlint:deprecation")
-
     }
     buildFeatures {
         compose = true
@@ -69,35 +68,34 @@ dependencies {
 
     // navigation & Hilt
     implementation(libs.androidx.navigation.compose)
-    implementation (libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.navigation.fragment)
-    implementation (libs.hilt.android)
-    kapt (libs.hilt.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     // Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson) // 或者使用 Moshi
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson) // 或者使用 Moshi
 
     // Hilt
-    implementation (libs.hilt.android.v244)
-    kapt (libs.hilt.compiler.v244)
+    implementation(libs.hilt.android.v244)
+    kapt(libs.hilt.compiler.v244)
 
     implementation(libs.androidx.material.icons.extended)
-    implementation (libs.barcode.scanning)
-    implementation (libs.coil.compose)
-    implementation (libs.kotlin.stdlib)
+    implementation(libs.barcode.scanning)
+    implementation(libs.coil.compose)
+    implementation(libs.kotlin.stdlib)
+    implementation("androidx.compose.material3:material3:1.3.1")
 
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
     testImplementation(libs.junit)
-    testImplementation (libs.androidx.core.testing)
-    testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation (libs.mockito.core)
-    testImplementation (libs.mockito.kotlin)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
     // 可选断言库
-    testImplementation (libs.truth)
-
-
+    testImplementation(libs.truth)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

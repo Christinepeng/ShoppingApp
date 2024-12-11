@@ -1,23 +1,13 @@
 package com.example.shoppingapp.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.shoppingapp.R
 
 @Composable
 fun SearchBar(
@@ -26,37 +16,44 @@ fun SearchBar(
     onSearchClicked: () -> Unit,
     onBarcodeScanClicked: (() -> Unit)? = null,
 ) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChanged,
-        placeholder = { Text(text = stringResource(R.string.search_products)) },
+    Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(64.dp)
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
-        leadingIcon = {
-            IconButton(onClick = onSearchClicked) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search))
-            }
-        },
-        trailingIcon = {
-            onBarcodeScanClicked?.let {
-                IconButton(onClick = it) {
-                    Icon(imageVector = Icons.Default.CameraAlt, contentDescription = stringResource(R.string.scan_barcode))
+                .padding(8.dp),
+    ) {
+        TextField(
+            value = query,
+            onValueChange = { onQueryChanged(it) },
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .height(56.dp),
+            placeholder = { Text("Search products") },
+            singleLine = true,
+//            colors =
+//                TextFieldDefaults.textFieldColors(
+//                    containerColor = MaterialTheme.colorScheme.surface,
+//                    textColor = MaterialTheme.colorScheme.onSurface,
+//                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+//                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                    disabledIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                    errorIndicatorColor = MaterialTheme.colorScheme.error,
+//                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+//                    cursorColor = MaterialTheme.colorScheme.primary, // 可选：设置光标颜色
+//                ),
+            trailingIcon = {
+                IconButton(onClick = onSearchClicked) {
+                    Icon(Icons.Default.Search, contentDescription = "Search")
                 }
+            },
+        )
+        if (onBarcodeScanClicked != null) {
+            IconButton(onClick = onBarcodeScanClicked) {
+                Icon(Icons.Default.CameraAlt, contentDescription = "Scan Barcode")
             }
-        },
-        singleLine = true,
-        keyboardOptions =
-            KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
-        keyboardActions =
-            KeyboardActions(
-                onSearch = {
-                    onSearchClicked()
-                },
-            ),
-    )
+        }
+    }
 }

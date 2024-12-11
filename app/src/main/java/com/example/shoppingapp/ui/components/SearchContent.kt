@@ -1,17 +1,8 @@
 package com.example.shoppingapp.ui.components
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.shoppingapp.model.Product
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
 
 @Composable
 fun SearchContent(
@@ -19,11 +10,8 @@ fun SearchContent(
     onQueryChanged: (String) -> Unit,
     onSearchClicked: () -> Unit,
     onImageCaptured: (Bitmap) -> Unit,
-    searchSuggestions: List<String>,
-    onSuggestionClicked: (String) -> Unit,
-    searchResults: List<Product>,
-    onProductClicked: (Product) -> Unit,
-    showBarcodeScanner: Boolean = false
+    showBarcodeScanner: Boolean = false,
+    onShowSuggestions: (String) -> Unit, // 新增参数
 ) {
     CameraHandler(onImageCaptured = onImageCaptured) { launchCamera ->
         Column {
@@ -31,32 +19,15 @@ fun SearchContent(
                 query = query,
                 onQueryChanged = onQueryChanged,
                 onSearchClicked = onSearchClicked,
-                onBarcodeScanClicked = if (showBarcodeScanner) launchCamera else null
+                onBarcodeScanClicked = if (showBarcodeScanner) launchCamera else null,
             )
 
-            // 显示搜索建议
-            if (searchSuggestions.isNotEmpty()) {
-                LazyColumn {
-                    items(searchSuggestions) { suggestion ->
-                        Text(
-                            text = suggestion,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onSuggestionClicked(suggestion) }
-                                .padding(8.dp)
-                        )
-                    }
-                }
+            // 当 query 不为空时，触发导航到 SuggestionListScreen
+            if (query.isNotEmpty()) {
+                onShowSuggestions(query)
             }
 
-            // 显示搜索结果
-            if (searchResults.isNotEmpty()) {
-                LazyColumn {
-                    items(searchResults) { product ->
-                        ProductItem(product = product, onClick = { onProductClicked(product) })
-                    }
-                }
-            }
+            // 原始内容在 SearchScreen 中处理
         }
     }
 }
