@@ -11,25 +11,23 @@ sealed class Screen(
     @StringRes val resourceId: Int? = null,
     val icon: ImageVector? = null,
 ) {
-    object Home : Screen("home", R.string.home, Icons.Default.Home)
+    object HomeScreen : Screen("homeScreen", R.string.home, Icons.Default.Home)
 
-    object Shop : Screen("shop", R.string.shop, Icons.Default.Search)
+    object ShopScreen : Screen("shopScreen", R.string.shop, Icons.Default.Search)
 
-    object SuggestionList : Screen("suggestionList?query={query}") {
-        fun createRoute(query: String) = "suggestionList?query=$query"
+    object SuggestionScreen : Screen("suggestionScreen")
+
+    object SearchScreen : Screen("searchResultsScreen?query={query}") {
+        fun createRoute(query: String) = "searchResultsScreen?query=$query"
     }
 
-    object SearchResults : Screen("searchResults?query={query}") {
-        fun createRoute(query: String) = "searchResults?query=$query"
+    object ProductDetailScreen : Screen("productDetailScreen") {
+        fun createRoute(productId: String) = "productDetailScreen/$productId"
     }
 
-    object ProductDetail : Screen("productDetail") {
-        fun createRoute(productId: String) = "productDetail/$productId"
-    }
+    object FavoritesScreen : Screen("favoritesScreen", R.string.favorites, Icons.Default.Favorite)
 
-    object Favorites : Screen("favorites", R.string.favorites, Icons.Default.Favorite)
+    object BagScreen : Screen("bagScreen", R.string.bag, Icons.Default.ShoppingCart)
 
-    object Bag : Screen("bag", R.string.bag, Icons.Default.ShoppingCart)
-
-    object Account : Screen("account", R.string.account, Icons.Default.Person)
+    object AccountScreen : Screen("accountScreen", R.string.account, Icons.Default.Person)
 }
