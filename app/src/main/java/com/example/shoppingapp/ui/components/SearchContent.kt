@@ -11,7 +11,7 @@ fun SearchContent(
     onSearchClicked: () -> Unit,
     onImageCaptured: (Bitmap) -> Unit,
     showBarcodeScanner: Boolean = false,
-    onShowSuggestions: (String) -> Unit, // 新增参数
+    onSearchBarFocused: () -> Unit,
 ) {
     CameraHandler(onImageCaptured = onImageCaptured) { launchCamera ->
         Column {
@@ -20,12 +20,8 @@ fun SearchContent(
                 onQueryChanged = onQueryChanged,
                 onSearchClicked = onSearchClicked,
                 onBarcodeScanClicked = if (showBarcodeScanner) launchCamera else null,
+                onSearchBarFocused = onSearchBarFocused,
             )
-
-            // 当 query 不为空时，触发导航到 SuggestionListScreen
-            if (query.isNotEmpty()) {
-                onShowSuggestions(query)
-            }
 
             // 原始内容在 SearchScreen 中处理
         }

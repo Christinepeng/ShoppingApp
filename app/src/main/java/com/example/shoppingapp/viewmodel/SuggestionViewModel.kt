@@ -14,20 +14,31 @@ class SuggestionViewModel
     constructor(
         private val productRepository: ProductRepository,
     ) : ViewModel() {
+        private val _query = MutableStateFlow("")
+        val query: StateFlow<String> = _query.asStateFlow()
+
         private val _suggestions = MutableStateFlow<List<String>>(emptyList())
         val suggestions: StateFlow<List<String>> = _suggestions.asStateFlow()
 
-        fun fetchSuggestions(query: String) {
+        fun fetchSuggestions() {
             viewModelScope.launch {
-                try {
-                    val results = productRepository.searchProducts(query)
-                    val suggestions = results.mapNotNull { it.title }
-                    _suggestions.value = suggestions
-                } catch (e: Exception) {
-                    // 记录错误日志
-                    // 这里可以使用 Log.e 或其他日志工具
-                    _suggestions.value = emptyList()
-                }
+                _query
+                    .debounce(300) // 等待300毫秒後才處理最新的query
+                    .filter { it.isNotEmpty() }
+                    .distinctUntilChanged() // 僅當query變化時才觸發
+                    .collectLatest { query ->
+                        try {
+                            val results = productRepository.searchProducts(query)
+                            val suggestions = results.mapNotNull { it.title }
+                            _suggestions.value = suggestions
+                        } catch (e: Exception) {
+                            _suggestions.value = emptyList()
+                        }
+                    }
             }
+        }
+
+        fun onQueryChanged(newQuery: String) {
+            _query.value = newQuery
         }
     }

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -15,6 +16,7 @@ fun SearchBar(
     onQueryChanged: (String) -> Unit,
     onSearchClicked: () -> Unit,
     onBarcodeScanClicked: (() -> Unit)? = null,
+    onSearchBarFocused: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -28,22 +30,14 @@ fun SearchBar(
             modifier =
                 Modifier
                     .weight(1f)
-                    .height(56.dp),
+                    .height(56.dp)
+                    .onFocusChanged { focusState ->
+                        if (focusState.isFocused && onSearchBarFocused != null) {
+                            onSearchBarFocused()
+                        }
+                    },
             placeholder = { Text("Search products") },
             singleLine = true,
-//            colors =
-//                TextFieldDefaults.textFieldColors(
-//                    containerColor = MaterialTheme.colorScheme.surface,
-//                    textColor = MaterialTheme.colorScheme.onSurface,
-//                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-//                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    disabledIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    errorIndicatorColor = MaterialTheme.colorScheme.error,
-//                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-//                    cursorColor = MaterialTheme.colorScheme.primary, // 可选：设置光标颜色
-//                ),
             trailingIcon = {
                 IconButton(onClick = onSearchClicked) {
                     Icon(Icons.Default.Search, contentDescription = "Search")

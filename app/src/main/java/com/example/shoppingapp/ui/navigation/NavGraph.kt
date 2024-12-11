@@ -16,25 +16,15 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = Screen.HomeScreen.route,
         modifier = modifier,
     ) {
         // Home
-        composable(Screen.Home.route) {
+        composable(Screen.HomeScreen.route) {
             HomeScreen(
-                onShowResults = { query ->
-                    // 从 Home 进入搜索结果时，保留 Home 在栈中
-                    navController.navigate(Screen.SearchResults.createRoute(query)) {
-                        popUpTo(Screen.Home.route) { inclusive = false }
-                        launchSingleTop = true
-                    }
-                },
-                onProductClicked = { productId ->
-                    navController.navigate(Screen.ProductDetail.createRoute(productId))
-                },
-                onShowSuggestions = { query ->
-                    navController.navigate(Screen.SuggestionList.createRoute(query)) {
-                        popUpTo(Screen.Home.route) { inclusive = false }
+                onSearchBarFocused = {
+                    navController.navigate(Screen.SuggestionScreen.route) {
+                        popUpTo(Screen.HomeScreen.route) { inclusive = false }
                         launchSingleTop = true
                     }
                 },
@@ -42,21 +32,11 @@ fun NavGraph(
         }
 
         // Shop
-        composable(Screen.Shop.route) {
+        composable(Screen.ShopScreen.route) {
             ShopScreen(
-                onShowResults = { query ->
-                    // 从 Shop 进入搜索结果时，保留 Shop 在栈中
-                    navController.navigate(Screen.SearchResults.createRoute(query)) {
-                        popUpTo(Screen.Shop.route) { inclusive = false }
-                        launchSingleTop = true
-                    }
-                },
-                onProductClicked = { productId ->
-                    navController.navigate(Screen.ProductDetail.createRoute(productId))
-                },
-                onShowSuggestions = { query ->
-                    navController.navigate(Screen.SuggestionList.createRoute(query)) {
-                        popUpTo(Screen.Shop.route) { inclusive = false }
+                onSearchBarFocused = {
+                    navController.navigate(Screen.SuggestionScreen.route) {
+                        popUpTo(Screen.ShopScreen.route) { inclusive = false }
                         launchSingleTop = true
                     }
                 },
@@ -64,32 +44,20 @@ fun NavGraph(
         }
 
         // Suggestion List
-        composable(
-            route = Screen.SuggestionList.route,
-            arguments =
-                listOf(
-                    navArgument("query") {
-                        type = NavType.StringType
-                        defaultValue = ""
-                    },
-                ),
-        ) { backStackEntry ->
-            val query = backStackEntry.arguments?.getString("query") ?: ""
-            SuggestionListScreen(
-                query = query,
+        composable(route = Screen.SuggestionScreen.route) {
+            SuggestionScreen(
                 onSuggestionClicked = { suggestion ->
-                    navController.navigate(Screen.SearchResults.createRoute(suggestion)) {
-                        popUpTo(Screen.SuggestionList.route) { inclusive = true }
+                    navController.navigate(Screen.SearchScreen.createRoute(suggestion)) {
+                        popUpTo(Screen.SuggestionScreen.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
-                onBack = { navController.popBackStack() },
             )
         }
 
         // Search Results
         composable(
-            route = Screen.SearchResults.route,
+            route = Screen.SearchScreen.route,
             arguments =
                 listOf(
                     navArgument("query") {
@@ -99,18 +67,23 @@ fun NavGraph(
                 ),
         ) { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query") ?: ""
-            SearchResultsScreen(
+            SearchScreen(
                 query = query,
                 onProductClicked = { productId ->
-                    navController.navigate(Screen.ProductDetail.createRoute(productId))
+                    navController.navigate(Screen.ProductDetailScreen.createRoute(productId))
                 },
-                onBack = { navController.popBackStack() },
+                onSearchBarFocused = {
+                    navController.navigate(Screen.SuggestionScreen.route) {
+                        popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
 
         // Product Detail
         composable(
-            route = Screen.ProductDetail.route + "/{productId}",
+            route = Screen.ProductDetailScreen.route + "/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")
@@ -121,8 +94,8 @@ fun NavGraph(
         }
 
         // Favorites, Bag, Account
-        composable(Screen.Favorites.route) { FavoritesScreen() }
-        composable(Screen.Bag.route) { BagScreen() }
-        composable(Screen.Account.route) { AccountScreen() }
+        composable(Screen.FavoritesScreen.route) { FavoritesScreen() }
+        composable(Screen.BagScreen.route) { BagScreen() }
+        composable(Screen.AccountScreen.route) { AccountScreen() }
     }
 }

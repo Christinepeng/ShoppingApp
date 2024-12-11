@@ -17,11 +17,11 @@ import com.example.shoppingapp.ui.navigation.Screen
 fun BottomBar(navController: NavController) {
     val items =
         listOf(
-            Screen.Home,
-            Screen.Shop,
-            Screen.Favorites,
-            Screen.Bag,
-            Screen.Account,
+            Screen.HomeScreen,
+            Screen.ShopScreen,
+            Screen.FavoritesScreen,
+            Screen.BagScreen,
+            Screen.AccountScreen,
         )
     NavigationBar {
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
