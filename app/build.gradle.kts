@@ -86,9 +86,9 @@ dependencies {
     implementation(libs.barcode.scanning)
     implementation(libs.coil.compose)
     implementation(libs.kotlin.stdlib)
-    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation(libs.material3)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
