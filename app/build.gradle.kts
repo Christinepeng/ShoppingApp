@@ -88,14 +88,14 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.material3)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Firebase Authentication
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation(libs.firebase.auth.ktx)
     // Firebase UI Auth
-    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.bom)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core.testing)
