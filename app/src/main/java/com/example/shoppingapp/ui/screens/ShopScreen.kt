@@ -1,12 +1,21 @@
 package com.example.shoppingapp.ui.screens
 
-import com.example.shoppingapp.viewmodel.ShopViewModel
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.shoppingapp.ui.components.SearchContent
+import com.example.shoppingapp.viewmodel.ShopViewModel
 
 @Composable
-fun ShopScreen(viewModel: ShopViewModel = hiltViewModel()) {
-    val state = viewModel.state
-    Text(text = "Shop")
+fun ShopScreen(onSearchBarFocused: () -> Unit) {
+    val viewModel: ShopViewModel = hiltViewModel()
+
+    // When SearchBar in SearchContent is selected, call `onSearchBarFocused`
+    SearchContent(
+        query = "",
+        onQueryChanged = {},
+        onSearchClicked = {},
+        onImageCaptured = {},
+        showBarcodeScanner = true,
+        onSearchBarFocused = onSearchBarFocused,
+    )
 }
