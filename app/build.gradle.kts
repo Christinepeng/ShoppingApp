@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.dagger.hilt.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -88,6 +89,13 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    // Firebase UI Auth
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core.testing)
