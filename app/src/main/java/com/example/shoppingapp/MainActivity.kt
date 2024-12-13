@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.shoppingapp.ui.components.BottomBar
 import com.example.shoppingapp.ui.navigation.NavGraph
+import com.example.shoppingapp.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,10 +25,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController) },
     ) { innerPadding ->
         NavGraph(navController, Modifier.padding(innerPadding))
     }
