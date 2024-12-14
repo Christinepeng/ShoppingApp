@@ -2,65 +2,12 @@ package com.example.shoppingapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppingapp.repository.AuthRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-@HiltViewModel
-class AuthViewModel
-    @Inject
-    constructor(
-        private val authRepository: AuthRepository,
-    ) : ViewModel() {
-        private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
-        val authState: StateFlow<AuthState> = _authState.asStateFlow()
-
-        init {
-            // 初始化時檢查用戶是否已登入
-            val user = authRepository.currentUser
-            if (user != null) {
-                _authState.value = AuthState.Success(user)
-            }
-        }
-
-        fun signUp(
-            email: String,
-            password: String,
-        ) {
-            viewModelScope.launch {
-                _authState.value = AuthState.Loading
-                val result = authRepository.signUp(email, password)
-                if (result.isSuccess) {
-                    _authState.value = AuthState.Success(result.getOrNull())
-                } else {
-                    _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "註冊失敗")
-                }
-            }
-        }
-
-        fun signIn(
-            email: String,
-            password: String,
-        ) {
-            viewModelScope.launch {
-                _authState.value = AuthState.Loading
-                val result = authRepository.signIn(email, password)
-                if (result.isSuccess) {
-                    _authState.value = AuthState.Success(result.getOrNull())
-                } else {
-                    _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "登入失敗")
-                }
-            }
-        }
-
-        fun signOut() {
-            authRepository.signOut()
-            _authState.value = AuthState.Idle
-        }
-    }
+import kotlinx.coroutines.tasks.await
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -74,4 +21,45 @@ sealed class AuthState {
     data class Error(
         val message: String,
     ) : AuthState()
+}
+
+class AuthViewModel : ViewModel() {
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
+    val authState: StateFlow<AuthState> = _authState
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    fun signUp(
+        email: String,
+        password: String,
+    ) {
+        viewModelScope.launch {
+            _authState.value = AuthState.Loading
+            try {
+                // 使用 FirebaseAuth 創建用戶
+                val result = auth.createUserWithEmailAndPassword(email, password).await()
+                val user = result.user
+                _authState.value = AuthState.Success(user)
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(e.message ?: "Unknown Error")
+            }
+        }
+    }
+
+    fun signIn(
+        email: String,
+        password: String,
+    ) {
+        viewModelScope.launch {
+            _authState.value = AuthState.Loading
+            try {
+                // 使用 FirebaseAuth 登錄用戶
+                val result = auth.signInWithEmailAndPassword(email, password).await()
+                val user = result.user
+                _authState.value = AuthState.Success(user)
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(e.message ?: "Unknown Error")
+            }
+        }
+    }
 }

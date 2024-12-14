@@ -1,5 +1,3 @@
-// package: com.example.shoppingapp.ui.screens
-
 package com.example.shoppingapp.ui.screens
 
 import androidx.compose.foundation.layout.*
@@ -7,16 +5,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.ui.components.SearchContent
 import com.example.shoppingapp.viewmodel.AuthState
 import com.example.shoppingapp.viewmodel.AuthViewModel
+import com.google.firebase.auth.FirebaseUser
 
 @Composable
 fun HomeScreen(
     onSearchBarFocused: () -> Unit,
+    onNavigateToAuth: () -> Unit, // 新增導航參數
     authViewModel: AuthViewModel = hiltViewModel(),
 ) {
     val authState by authViewModel.authState.collectAsState()
@@ -24,7 +23,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        // 您現有的 SearchContent
+        // 搜尋欄
         SearchContent(
             query = "",
             onQueryChanged = {},
@@ -36,110 +35,62 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 使用局部變數來進行智能轉換
+        // 根據登入狀態顯示不同的區域
         when (val state = authState) {
-            is AuthState.Idle, is AuthState.Error -> AuthSection(state, authViewModel)
-            is AuthState.Loading -> LoadingIndicator()
-            is AuthState.Success -> WelcomeSection(state.user, authViewModel)
+            is AuthState.Success -> {
+                // 已登入
+                WelcomeSection(user = state.user)
+            }
+
+            else -> {
+                // 未登入
+                GuestSection(onNavigateToAuth = onNavigateToAuth)
+            }
         }
     }
 }
 
 @Composable
-fun AuthSection(
-    state: AuthState,
-    authViewModel: AuthViewModel,
-) {
-    var isSignUp by remember { mutableStateOf(false) }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
+fun WelcomeSection(user: FirebaseUser?) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
     ) {
-        Text(text = if (isSignUp) "註冊" else "登入", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
+        Text(
+            text = "Hi, ${user?.displayName ?: "User"}",
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("密碼") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
+        Text(text = "${user?.email ?: "0"} pts")
+    }
+}
+
+@Composable
+fun GuestSection(onNavigateToAuth: () -> Unit) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Track your rewards, check order status...",
+            style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                if (isSignUp) {
-                    authViewModel.signUp(email, password)
-                } else {
-                    authViewModel.signIn(email, password)
-                }
-            },
+        Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            Text(text = if (isSignUp) "註冊" else "登入")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(
-            onClick = { isSignUp = !isSignUp },
-            modifier = Modifier.align(Alignment.End),
-        ) {
-            Text(text = if (isSignUp) "已有帳號？登入" else "沒有帳號？註冊")
-        }
-    }
-
-    // 顯示錯誤訊息
-    if (state is AuthState.Error) {
-        val errorMessage = state.message
-        Snackbar(
-            action = { /* 可選的重試按鈕 */ },
-            modifier = Modifier.padding(8.dp),
-        ) {
-            Text(text = errorMessage)
-        }
-    }
-}
-
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun WelcomeSection(
-    user: com.google.firebase.auth.FirebaseUser?,
-    authViewModel: AuthViewModel,
-) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(text = "歡迎，${user?.email}")
-        Button(onClick = { authViewModel.signOut() }) {
-            Text(text = "登出")
+            Button(onClick = { onNavigateToAuth() }) {
+                Text("Create Account")
+            }
+            OutlinedButton(onClick = { onNavigateToAuth() }) {
+                Text("Sign In")
+            }
         }
     }
 }

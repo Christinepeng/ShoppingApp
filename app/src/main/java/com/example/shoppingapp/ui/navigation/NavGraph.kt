@@ -28,6 +28,18 @@ fun NavGraph(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToAuth = {
+                    navController.navigate(Screen.AuthScreen.route)
+                },
+            )
+        }
+
+        // Auth Screen
+        composable(Screen.AuthScreen.route) {
+            AuthScreen(
+                onAuthSuccess = {
+                    navController.popBackStack() // 返回上一頁
+                },
             )
         }
 

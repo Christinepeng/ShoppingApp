@@ -13,6 +13,8 @@ sealed class Screen(
 ) {
     object HomeScreen : Screen("homeScreen", R.string.home, Icons.Default.Home)
 
+    object AuthScreen : Screen("authScreen")
+
     object ShopScreen : Screen("shopScreen", R.string.shop, Icons.Default.Search)
 
     object SuggestionScreen : Screen("suggestionScreen")
