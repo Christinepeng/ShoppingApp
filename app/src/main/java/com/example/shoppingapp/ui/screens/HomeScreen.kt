@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.ui.components.SearchContent
 import com.example.shoppingapp.viewmodel.AuthState
 import com.example.shoppingapp.viewmodel.AuthViewModel
@@ -15,15 +14,12 @@ import com.google.firebase.auth.FirebaseUser
 @Composable
 fun HomeScreen(
     onSearchBarFocused: () -> Unit,
-    onNavigateToAuth: () -> Unit, // 新增導航參數
-    authViewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToAuth: () -> Unit,
+    authViewModel: AuthViewModel,
 ) {
     val authState by authViewModel.authState.collectAsState()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        // 搜尋欄
+    Column(modifier = Modifier.fillMaxSize()) {
         SearchContent(
             query = "",
             onQueryChanged = {},
@@ -35,15 +31,11 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 根據登入狀態顯示不同的區域
         when (val state = authState) {
             is AuthState.Success -> {
-                // 已登入
                 WelcomeSection(user = state.user)
             }
-
             else -> {
-                // 未登入
                 GuestSection(onNavigateToAuth = onNavigateToAuth)
             }
         }
@@ -59,11 +51,11 @@ fun WelcomeSection(user: FirebaseUser?) {
                 .padding(16.dp),
     ) {
         Text(
-            text = "Hi, ${user?.displayName ?: "User"}",
+            text = "Hi, ${user?.email ?: "User"}",
             style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "${user?.email ?: "0"} pts")
+        Text(text = "${user?.email ?: ""} pts")
     }
 }
 

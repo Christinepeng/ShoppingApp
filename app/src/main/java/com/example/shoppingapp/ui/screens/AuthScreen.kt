@@ -6,15 +6,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.viewmodel.AuthState
 import com.example.shoppingapp.viewmodel.AuthViewModel
 
 @Composable
 fun AuthScreen(
     onAuthSuccess: () -> Unit,
-    authViewModel: AuthViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel,
 ) {
+    // 跟之前一樣的邏輯，唯一差別是不要在這裡 hiltViewModel()，改用傳入的 authViewModel
     var isSignUp by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -32,7 +32,6 @@ fun AuthScreen(
                 val msg = (authState as AuthState.Error).message
                 snackbarHostState.showSnackbar("Error: $msg")
             }
-            // EmailVerificationSent 狀態在UI中顯示相關提示，不立即導航
             else -> {}
         }
     }
@@ -47,14 +46,11 @@ fun AuthScreen(
                     .padding(16.dp)
                     .padding(paddingValues),
         ) {
-            // 標題顯示
             Text(
                 text = if (isSignUp) "註冊" else "登入",
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-            // 輸入 Email
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -62,8 +58,6 @@ fun AuthScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-            // 輸入密碼
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -72,8 +66,6 @@ fun AuthScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
-
-            // 按鈕：註冊或登入
             Button(
                 onClick = {
                     if (isSignUp) {
@@ -86,15 +78,11 @@ fun AuthScreen(
             ) {
                 Text(text = if (isSignUp) "註冊" else "登入")
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            // 切換註冊/登入模式
             TextButton(onClick = { isSignUp = !isSignUp }) {
                 Text(text = if (isSignUp) "已有帳號？登入" else "沒有帳號？註冊")
             }
 
-            // 若目前狀態為 EmailVerificationSent，顯示提示訊息與「我已驗證」按鈕
             if (authState is AuthState.EmailVerificationSent) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -106,7 +94,6 @@ fun AuthScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
-                        // 使用者點選「我已驗證」後，檢查是否完成驗證
                         authViewModel.checkEmailVerification()
                     },
                 ) {

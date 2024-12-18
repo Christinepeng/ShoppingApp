@@ -2,17 +2,20 @@ package com.example.shoppingapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.shoppingapp.ui.screens.*
+import com.example.shoppingapp.viewmodel.AuthViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    authViewModel: AuthViewModel = hiltViewModel(), // 在NavGraph建立一次
 ) {
     NavHost(
         navController = navController,
@@ -31,6 +34,7 @@ fun NavGraph(
                 onNavigateToAuth = {
                     navController.navigate(Screen.AuthScreen.route)
                 },
+                authViewModel = authViewModel, // 傳遞同一個ViewModel
             )
         }
 
@@ -40,6 +44,7 @@ fun NavGraph(
                 onAuthSuccess = {
                     navController.popBackStack() // 返回上一頁
                 },
+                authViewModel = authViewModel, // 使用同一個ViewModel
             )
         }
 
