@@ -20,11 +20,8 @@ fun AuthScreen(
     var password by remember { mutableStateOf("") }
 
     val authState by authViewModel.authState.collectAsState()
-
-    // 建立 SnackbarHostState 用於顯示訊息
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // 當 authState 改變時，若成功則顯示 Snackbar 並呼叫 onAuthSuccess()
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Success -> {
@@ -32,9 +29,11 @@ fun AuthScreen(
                 onAuthSuccess()
             }
             is AuthState.Error -> {
-                snackbarHostState.showSnackbar("Error: ${(authState as AuthState.Error).message}")
+                val msg = (authState as AuthState.Error).message
+                snackbarHostState.showSnackbar("Error: $msg")
             }
-            else -> { /* Idle或Loading狀態不顯示Snackbar */ }
+            // EmailVerificationSent 狀態在UI中顯示相關提示，不立即導航
+            else -> {}
         }
     }
 
@@ -48,11 +47,14 @@ fun AuthScreen(
                     .padding(16.dp)
                     .padding(paddingValues),
         ) {
+            // 標題顯示
             Text(
                 text = if (isSignUp) "註冊" else "登入",
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // 輸入 Email
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -60,6 +62,8 @@ fun AuthScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // 輸入密碼
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -68,6 +72,8 @@ fun AuthScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
+
+            // 按鈕：註冊或登入
             Button(
                 onClick = {
                     if (isSignUp) {
@@ -80,9 +86,32 @@ fun AuthScreen(
             ) {
                 Text(text = if (isSignUp) "註冊" else "登入")
             }
+
             Spacer(modifier = Modifier.height(8.dp))
+
+            // 切換註冊/登入模式
             TextButton(onClick = { isSignUp = !isSignUp }) {
                 Text(text = if (isSignUp) "已有帳號？登入" else "沒有帳號？註冊")
+            }
+
+            // 若目前狀態為 EmailVerificationSent，顯示提示訊息與「我已驗證」按鈕
+            if (authState is AuthState.EmailVerificationSent) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text =
+                        "A verification email has been sent to $email. " +
+                            "Please verify your email before proceeding.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        // 使用者點選「我已驗證」後，檢查是否完成驗證
+                        authViewModel.checkEmailVerification()
+                    },
+                ) {
+                    Text("I have verified my email")
+                }
             }
         }
     }
