@@ -113,6 +113,10 @@ fun NavGraph(
         // Favorites, Bag, Account
         composable(Screen.FavoritesScreen.route) { FavoritesScreen() }
         composable(Screen.BagScreen.route) { BagScreen() }
-        composable(Screen.AccountScreen.route) { AccountScreen() }
+        composable(Screen.AccountScreen.route) {
+            AccountScreen(
+                authViewModel = authViewModel, // 將 AuthViewModel 傳入 AccountScreen
+            )
+        }
     }
 }
