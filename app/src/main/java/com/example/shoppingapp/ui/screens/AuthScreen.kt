@@ -6,25 +6,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.viewmodel.AuthState
 import com.example.shoppingapp.viewmodel.AuthViewModel
 
 @Composable
 fun AuthScreen(
     onAuthSuccess: () -> Unit,
-    authViewModel: AuthViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel,
 ) {
+    // 跟之前一樣的邏輯，唯一差別是不要在這裡 hiltViewModel()，改用傳入的 authViewModel
     var isSignUp by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     val authState by authViewModel.authState.collectAsState()
-
-    // 建立 SnackbarHostState 用於顯示訊息
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // 當 authState 改變時，若成功則顯示 Snackbar 並呼叫 onAuthSuccess()
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Success -> {
@@ -32,9 +29,10 @@ fun AuthScreen(
                 onAuthSuccess()
             }
             is AuthState.Error -> {
-                snackbarHostState.showSnackbar("Error: ${(authState as AuthState.Error).message}")
+                val msg = (authState as AuthState.Error).message
+                snackbarHostState.showSnackbar("Error: $msg")
             }
-            else -> { /* Idle或Loading狀態不顯示Snackbar */ }
+            else -> {}
         }
     }
 
@@ -83,6 +81,24 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = { isSignUp = !isSignUp }) {
                 Text(text = if (isSignUp) "已有帳號？登入" else "沒有帳號？註冊")
+            }
+
+            if (authState is AuthState.EmailVerificationSent) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text =
+                        "A verification email has been sent to $email. " +
+                            "Please verify your email before proceeding.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        authViewModel.checkEmailVerification()
+                    },
+                ) {
+                    Text("I have verified my email")
+                }
             }
         }
     }
