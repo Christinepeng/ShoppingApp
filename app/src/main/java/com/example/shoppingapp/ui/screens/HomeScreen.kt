@@ -1,6 +1,8 @@
 package com.example.shoppingapp.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +21,9 @@ fun HomeScreen(
 ) {
     val authState by authViewModel.authState.collectAsState()
 
+    // 整個螢幕是一個 Column（固定高度）
     Column(modifier = Modifier.fillMaxSize()) {
+        // 1) 固定在頂部的搜尋欄
         SearchContent(
             query = "",
             onQueryChanged = {},
@@ -29,15 +33,31 @@ fun HomeScreen(
             onSearchBarFocused = onSearchBarFocused,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // 2) 其餘內容可垂直捲動：登入功能 + 促銷圖片
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        when (val state = authState) {
-            is AuthState.Success -> {
-                WelcomeSection(user = state.user)
+            // 根據登入狀態顯示不同區塊
+            when (val state = authState) {
+                is AuthState.Success -> {
+                    WelcomeSection(user = state.user)
+                }
+                else -> {
+                    GuestSection(onNavigateToAuth = onNavigateToAuth)
+                }
             }
-            else -> {
-                GuestSection(onNavigateToAuth = onNavigateToAuth)
-            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 促銷圖片區域
+            PromotionsBannerScreen()
+
+            // 若有更多內容，可繼續往下添加
         }
     }
 }
