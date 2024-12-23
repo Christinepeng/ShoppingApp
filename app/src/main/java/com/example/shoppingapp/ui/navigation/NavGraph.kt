@@ -57,7 +57,23 @@ fun NavGraph(
                         launchSingleTop = true
                     }
                 },
+                // 加入 onCategoryClick，點擊分類後跳到 ShopCategoryDetailScreen
+                onCategoryClick = { category ->
+                    navController.navigate(
+                        Screen.ShopCategoryDetailScreen.createRoute(category),
+                    )
+                },
             )
+        }
+
+        // ShopCategoryDetailScreen composable
+        composable(
+            route = Screen.ShopCategoryDetailScreen.route + "/{categoryName}",
+        ) { backStackEntry ->
+            val categoryName =
+                backStackEntry.arguments?.getString("categoryName") ?: "Unknown Category"
+
+            ShopCategoryDetailScreen(categoryName = categoryName)
         }
 
         // Suggestion List

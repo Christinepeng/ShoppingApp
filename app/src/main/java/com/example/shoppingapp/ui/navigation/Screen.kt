@@ -27,6 +27,10 @@ sealed class Screen(
         fun createRoute(productId: String) = "productDetailScreen/$productId"
     }
 
+    object ShopCategoryDetailScreen : Screen("ShopCategoryDetailScreen") {
+        fun createRoute(categoryName: String) = "ShopCategoryDetailScreen/$categoryName"
+    }
+
     object FavoritesScreen : Screen("favoritesScreen", R.string.favorites, Icons.Default.Favorite)
 
     object BagScreen : Screen("bagScreen", R.string.bag, Icons.Default.ShoppingCart)
