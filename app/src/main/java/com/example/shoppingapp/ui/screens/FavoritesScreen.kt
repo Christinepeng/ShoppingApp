@@ -7,12 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.ui.components.ProductItem
 import com.example.shoppingapp.viewmodel.FavoritesViewModel
 
 @Composable
-fun FavoritesScreen(viewModel: FavoritesViewModel = hiltViewModel()) {
+fun FavoritesScreen(viewModel: FavoritesViewModel) {
     val favoriteProducts = viewModel.favoriteProducts
 
     if (favoriteProducts.isEmpty()) {

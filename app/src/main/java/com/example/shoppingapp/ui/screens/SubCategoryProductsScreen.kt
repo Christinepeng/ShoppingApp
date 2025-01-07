@@ -9,19 +9,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.ui.components.ProductItem
+import com.example.shoppingapp.viewmodel.FavoritesViewModel
 import com.example.shoppingapp.viewmodel.SubCategoryProductsViewModel
 
 @Composable
 fun SubCategoryProductsScreen(
     mainCategory: String,
     subCategory: String,
+    favoritesViewModel: FavoritesViewModel, // <-- 這裡改成必傳
     onProductClicked: (String) -> Unit,
 ) {
-    // 與 SearchScreen 類似的流程
+    // 只使用 SubCategoryProductsViewModel 做搜尋，不再呼叫 favoritesViewModel = hiltViewModel()
     val viewModel: SubCategoryProductsViewModel = hiltViewModel()
     val productList by viewModel.searchResults.collectAsState()
 
-    // 一進畫面就觸發搜尋：把主分類 + 細分分類組成 query (簡單示範)
+    // 一進畫面就觸發搜尋
     LaunchedEffect(mainCategory, subCategory) {
         val combinedQuery = "$mainCategory $subCategory".trim()
         viewModel.searchForSubCategory(combinedQuery)
@@ -41,8 +43,13 @@ fun SubCategoryProductsScreen(
         } else {
             LazyColumn {
                 items(productList) { product ->
+                    val isFav = favoritesViewModel.isFavorite(product.id)
                     ProductItem(
                         product = product,
+                        isFavorite = isFav,
+                        onFavoriteClick = {
+                            favoritesViewModel.toggleFavorite(product)
+                        },
                         onClick = {
                             onProductClicked(product.id)
                         },

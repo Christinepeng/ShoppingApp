@@ -17,14 +17,11 @@ import com.example.shoppingapp.viewmodel.SearchViewModel
 @Composable
 fun SearchScreen(
     query: String,
+    favoritesViewModel: FavoritesViewModel, // 改成必傳
     onProductClicked: (String) -> Unit,
     onSearchBarFocused: () -> Unit,
 ) {
-    // 原本的 SearchViewModel
     val searchViewModel: SearchViewModel = hiltViewModel()
-    // 新增 FavoritesViewModel，用來檢查/更新最愛
-    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-
     val searchResults by searchViewModel.searchResults.collectAsState()
 
     LaunchedEffect(query) {
@@ -55,7 +52,6 @@ fun SearchScreen(
             ) {
                 items(searchResults) { product: Product ->
                     val isFav = favoritesViewModel.isFavorite(product.id)
-
                     ProductItem(
                         product = product,
                         isFavorite = isFav,
