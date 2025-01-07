@@ -10,13 +10,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.shoppingapp.ui.screens.*
 import com.example.shoppingapp.viewmodel.AuthViewModel
+import com.example.shoppingapp.viewmodel.FavoritesViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    authViewModel: AuthViewModel = hiltViewModel(), // 在NavGraph建立一次
+    // 在 NavGraph 建立一次 AuthViewModel
+    authViewModel: AuthViewModel = hiltViewModel(),
 ) {
+    // 在 NavGraph 建立一次 FavoritesViewModel
+    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = Screen.HomeScreen.route,
@@ -34,7 +39,7 @@ fun NavGraph(
                 onNavigateToAuth = {
                     navController.navigate(Screen.AuthScreen.route)
                 },
-                authViewModel = authViewModel, // 傳遞同一個ViewModel
+                authViewModel = authViewModel,
             )
         }
 
@@ -42,9 +47,9 @@ fun NavGraph(
         composable(Screen.AuthScreen.route) {
             AuthScreen(
                 onAuthSuccess = {
-                    navController.popBackStack() // 返回上一頁
+                    navController.popBackStack()
                 },
-                authViewModel = authViewModel, // 使用同一個ViewModel
+                authViewModel = authViewModel,
             )
         }
 
@@ -57,7 +62,6 @@ fun NavGraph(
                         launchSingleTop = true
                     }
                 },
-                // 加入 onCategoryClick，點擊分類後跳到 ShopCategoryDetailScreen
                 onCategoryClick = { category ->
                     navController.navigate(
                         Screen.ShopCategoryDetailScreen.createRoute(category),
@@ -70,10 +74,11 @@ fun NavGraph(
         composable(
             route = Screen.ShopCategoryDetailScreen.route + "/{categoryName}",
         ) { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: "Unknown Category"
+            val categoryName =
+                backStackEntry.arguments?.getString("categoryName") ?: "Unknown Category"
+
             ShopCategoryDetailScreen(
                 categoryName = categoryName,
-                // lambda，點擊「細分分類」後跳去 SubCategoryProductsScreen
                 onSubCategoryClick = { subCat ->
                     navController.navigate(
                         Screen.SubCategoryProductsScreen.createRoute(categoryName, subCat),
@@ -82,7 +87,7 @@ fun NavGraph(
             )
         }
 
-        // SubCategoryProductsScreen composable
+        // SubCategoryProductsScreen
         composable(
             route = Screen.SubCategoryProductsScreen.route,
             arguments =
@@ -100,19 +105,20 @@ fun NavGraph(
             val main = backStackEntry.arguments?.getString("main") ?: ""
             val sub = backStackEntry.arguments?.getString("sub") ?: ""
 
-            // 顯示該細分分類對應的商品列表
             SubCategoryProductsScreen(
                 mainCategory = main,
                 subCategory = sub,
+                favoritesViewModel = favoritesViewModel, // 傳同一個
                 onProductClicked = { productId ->
-                    // 與 SearchScreen 一樣，點擊商品 -> 前往商品詳情
-                    navController.navigate(Screen.ProductDetailScreen.createRoute(productId))
+                    navController.navigate(
+                        Screen.ProductDetailScreen.createRoute(productId),
+                    )
                 },
             )
         }
 
-        // Suggestion List
-        composable(route = Screen.SuggestionScreen.route) {
+        // SuggestionScreen
+        composable(Screen.SuggestionScreen.route) {
             SuggestionScreen(
                 onSuggestionClicked = { suggestion ->
                     navController.navigate(Screen.SearchScreen.createRoute(suggestion)) {
@@ -123,7 +129,7 @@ fun NavGraph(
             )
         }
 
-        // Search Results
+        // SearchScreen
         composable(
             route = Screen.SearchScreen.route,
             arguments =
@@ -135,10 +141,14 @@ fun NavGraph(
                 ),
         ) { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query") ?: ""
+
             SearchScreen(
                 query = query,
+                favoritesViewModel = favoritesViewModel, // 傳同一個
                 onProductClicked = { productId ->
-                    navController.navigate(Screen.ProductDetailScreen.createRoute(productId))
+                    navController.navigate(
+                        Screen.ProductDetailScreen.createRoute(productId),
+                    )
                 },
                 onSearchBarFocused = {
                     navController.navigate(Screen.SuggestionScreen.route) {
@@ -149,7 +159,7 @@ fun NavGraph(
             )
         }
 
-        // Product Detail
+        // ProductDetailScreen
         composable(
             route = Screen.ProductDetailScreen.route + "/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType }),
@@ -161,13 +171,16 @@ fun NavGraph(
             )
         }
 
-        // Favorites, Bag, Account
-        composable(Screen.FavoritesScreen.route) { FavoritesScreen() }
+        // Favorites
+        composable(Screen.FavoritesScreen.route) {
+            // 必須顯式傳入 NavGraph scope 裡的 favoritesViewModel
+            FavoritesScreen(viewModel = favoritesViewModel)
+        }
+
+        // Bag, Account (沒用到 favoritesViewModel 就不用傳)
         composable(Screen.BagScreen.route) { BagScreen() }
         composable(Screen.AccountScreen.route) {
-            AccountScreen(
-                authViewModel = authViewModel, // 將 AuthViewModel 傳入 AccountScreen
-            )
+            AccountScreen(authViewModel = authViewModel)
         }
     }
 }
