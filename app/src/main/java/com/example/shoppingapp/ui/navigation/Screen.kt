@@ -36,4 +36,12 @@ sealed class Screen(
     object BagScreen : Screen("bagScreen", R.string.bag, Icons.Default.ShoppingCart)
 
     object AccountScreen : Screen("accountScreen", R.string.account, Icons.Default.Person)
+
+    // SubCategoryProductsScreen，帶兩個參數 (主分類、細分分類)
+    object SubCategoryProductsScreen : Screen("subCategoryProductsScreen?main={main}&sub={sub}") {
+        fun createRoute(
+            mainCategory: String,
+            subCategory: String,
+        ): String = "subCategoryProductsScreen?main=$mainCategory&sub=$subCategory"
+    }
 }

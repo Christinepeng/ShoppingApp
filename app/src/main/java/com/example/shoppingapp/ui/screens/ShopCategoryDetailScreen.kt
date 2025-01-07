@@ -10,7 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShopCategoryDetailScreen(categoryName: String) {
+fun ShopCategoryDetailScreen(
+    categoryName: String,
+    // 新增一個回調，用來在細分分類被點擊時做導覽
+    onSubCategoryClick: (String) -> Unit,
+) {
     // 依主分類名稱 => 找到對應細分分類
     val subcategoriesMap =
         mapOf(
@@ -224,11 +228,15 @@ fun ShopCategoryDetailScreen(categoryName: String) {
             // 如果該主分類沒在 map 裡，顯示提示
             Text("No subcategories found for $categoryName.")
         } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(subcategories) { subCat ->
-                    SubCategoryItem(subCat)
+                    SubCategoryItem(
+                        subCategoryName = subCat,
+                        onSubCategoryClick = { clickedSub ->
+                            // 呼叫從上層傳進來的 lambda
+                            onSubCategoryClick(clickedSub)
+                        },
+                    )
                 }
             }
         }
@@ -237,19 +245,21 @@ fun ShopCategoryDetailScreen(categoryName: String) {
 
 // 單一細分分類項目 (可點擊或直接顯示)
 @Composable
-fun SubCategoryItem(subCategoryName: String) {
+fun SubCategoryItem(
+    subCategoryName: String,
+    onSubCategoryClick: (String) -> Unit,
+) {
     Card(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .clickable {
-                    // TODO: 未來可做進一步導覽
+                    // 點擊之後，把 subCategoryName 傳遞出去
+                    onSubCategoryClick(subCategoryName)
                 },
         elevation = CardDefaults.cardElevation(2.dp),
     ) {
-        Box(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
-        ) {
+        Box(modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)) {
             Text(text = subCategoryName, style = MaterialTheme.typography.titleMedium)
         }
     }
