@@ -3,16 +3,20 @@ package com.example.shoppingapp.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import com.example.shoppingapp.ui.components.ProductItem
 import com.example.shoppingapp.viewmodel.BagItem
 import com.example.shoppingapp.viewmodel.BagViewModel
+import com.example.shoppingapp.viewmodel.FavoritesViewModel
 
 @Composable
-fun BagScreen(bagViewModel: BagViewModel) {
+fun BagScreen(
+    favoritesViewModel: FavoritesViewModel,
+    bagViewModel: BagViewModel,
+) {
     val bagItems = bagViewModel.bagItems
 
     if (bagItems.isEmpty()) {
@@ -26,28 +30,35 @@ fun BagScreen(bagViewModel: BagViewModel) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(bagItems) { bagItem: BagItem ->
-                // 從 BagViewModel 取得當前數量
-                val quantity = bagItem.quantity // 或 bagViewModel.getQuantity(bagItem.product.id)
+                val product = bagItem.product
+
+                // 1) Bag 狀態
+                val quantity = bagItem.quantity // 或 bagViewModel.getQuantity(product.id)
+
+                // 2) Favorites 狀態
+                val isFav = favoritesViewModel.isFavorite(product.id)
 
                 ProductItem(
-                    product = bagItem.product,
-                    // 如果有需要也可顯示 Favorites 狀態，
-                    // 這裡示範只顯示購物車邏輯:
-                    isFavorite = false,
-                    onFavoriteClick = { /* do nothing or remove if not needed */ },
-                    // Bag logic
+                    product = product,
+                    // Favorites
+                    isFavorite = isFav,
+                    onFavoriteClick = {
+                        favoritesViewModel.toggleFavorite(product)
+                    },
+                    // Bag
                     bagQuantity = quantity,
                     onAddToBagClick = {
-                        bagViewModel.addToBag(bagItem.product)
+                        // 雖然已在購物車，不常見，但你可讓它 quantity++ if needed
+                        bagViewModel.addToBag(product)
                     },
                     onIncrementClick = {
-                        bagViewModel.incrementQuantity(bagItem.product)
+                        bagViewModel.incrementQuantity(product)
                     },
                     onDecrementClick = {
-                        bagViewModel.decrementQuantity(bagItem.product)
+                        bagViewModel.decrementQuantity(product)
                     },
                     onClick = {
-                        // 若要點擊商品 -> 詳情，可視需要實作
+                        // e.g. navController.navigate(...)
                     },
                 )
             }

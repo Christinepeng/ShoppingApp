@@ -25,7 +25,7 @@ fun ProductItem(
     onAddToBagClick: (() -> Unit)? = null,
     onIncrementClick: (() -> Unit)? = null,
     onDecrementClick: (() -> Unit)? = null,
-    // 點擊整個商品區塊 -> 進商品詳情
+    // 整個 item 被點擊 -> 進商品詳情
     onClick: () -> Unit,
 ) {
     Box(
@@ -53,7 +53,7 @@ fun ProductItem(
                 contentScale = ContentScale.Crop,
             )
 
-            // 商品基本資訊
+            // 中間區域：商品文字 + Add to bag / - n +
             Column(
                 modifier =
                     Modifier
@@ -70,7 +70,7 @@ fun ProductItem(
                     style = MaterialTheme.typography.bodyMedium,
                 )
 
-                // Add to bag / - n +
+                // Bag UI
                 Spacer(modifier = Modifier.height(8.dp))
                 if (bagQuantity == 0) {
                     // 顯示 "Add to bag" 按鈕
@@ -105,7 +105,7 @@ fun ProductItem(
                 }
             }
 
-            // 右上角愛心 (Favorites)
+            // 右上角: 愛心按鈕 (Favorites)
             IconButton(onClick = onFavoriteClick) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

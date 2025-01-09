@@ -175,16 +175,20 @@ fun NavGraph(
             )
         }
 
-        // Favorites
+        // FavoritesScreen
         composable(Screen.FavoritesScreen.route) {
-            FavoritesScreen(viewModel = favoritesViewModel)
+            // 同時把 favoritesViewModel, bagViewModel 傳進去
+            FavoritesScreen(
+                favoritesViewModel = favoritesViewModel,
+                bagViewModel = bagViewModel,
+            )
         }
 
-        // Bag
+        // BagScreen
         composable(Screen.BagScreen.route) {
-            // 直接傳同一個 bagViewModel
             BagScreen(
-                bagViewModel = bagViewModel,
+                favoritesViewModel = favoritesViewModel, // <-- 同樣傳 favoritesViewModel
+                bagViewModel = bagViewModel, // <-- 傳 bagViewModel
             )
         }
 
