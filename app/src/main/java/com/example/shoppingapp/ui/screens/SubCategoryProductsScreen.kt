@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shoppingapp.ui.components.ProductItem
+import com.example.shoppingapp.viewmodel.BagViewModel
 import com.example.shoppingapp.viewmodel.FavoritesViewModel
 import com.example.shoppingapp.viewmodel.SubCategoryProductsViewModel
 
@@ -16,14 +17,14 @@ import com.example.shoppingapp.viewmodel.SubCategoryProductsViewModel
 fun SubCategoryProductsScreen(
     mainCategory: String,
     subCategory: String,
-    favoritesViewModel: FavoritesViewModel, // <-- 這裡改成必傳
+    favoritesViewModel: FavoritesViewModel,
+    bagViewModel: BagViewModel, // ❶ 新增 BagViewModel
     onProductClicked: (String) -> Unit,
 ) {
-    // 只使用 SubCategoryProductsViewModel 做搜尋，不再呼叫 favoritesViewModel = hiltViewModel()
     val viewModel: SubCategoryProductsViewModel = hiltViewModel()
     val productList by viewModel.searchResults.collectAsState()
 
-    // 一進畫面就觸發搜尋
+    // ❷ 一進畫面就查詢
     LaunchedEffect(mainCategory, subCategory) {
         val combinedQuery = "$mainCategory $subCategory".trim()
         viewModel.searchForSubCategory(combinedQuery)
@@ -43,13 +44,24 @@ fun SubCategoryProductsScreen(
         } else {
             LazyColumn {
                 items(productList) { product ->
+                    // ❸ Favorites
                     val isFav = favoritesViewModel.isFavorite(product.id)
+
+                    // ❹ Bag
+                    val quantity = bagViewModel.getQuantity(product.id)
+
                     ProductItem(
                         product = product,
+                        // Favorites
                         isFavorite = isFav,
                         onFavoriteClick = {
                             favoritesViewModel.toggleFavorite(product)
                         },
+                        // Bag
+                        bagQuantity = quantity,
+                        onAddToBagClick = { bagViewModel.addToBag(product) },
+                        onIncrementClick = { bagViewModel.incrementQuantity(product) },
+                        onDecrementClick = { bagViewModel.decrementQuantity(product) },
                         onClick = {
                             onProductClicked(product.id)
                         },

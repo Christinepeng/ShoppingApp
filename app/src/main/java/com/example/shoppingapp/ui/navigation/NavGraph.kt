@@ -10,17 +10,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.shoppingapp.ui.screens.*
 import com.example.shoppingapp.viewmodel.AuthViewModel
+import com.example.shoppingapp.viewmodel.BagViewModel
 import com.example.shoppingapp.viewmodel.FavoritesViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    // 在 NavGraph 建立一次 AuthViewModel
-    authViewModel: AuthViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(), // 單例
 ) {
-    // 在 NavGraph 建立一次 FavoritesViewModel
+    // FavoritesViewModel -> 管理我的最愛
     val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    // BagViewModel -> 管理購物車
+    val bagViewModel: BagViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -53,7 +55,7 @@ fun NavGraph(
             )
         }
 
-        // Shop
+        // Shop Screen
         composable(Screen.ShopScreen.route) {
             ShopScreen(
                 onSearchBarFocused = {
@@ -62,6 +64,7 @@ fun NavGraph(
                         launchSingleTop = true
                     }
                 },
+                // ...
                 onCategoryClick = { category ->
                     navController.navigate(
                         Screen.ShopCategoryDetailScreen.createRoute(category),
@@ -108,7 +111,8 @@ fun NavGraph(
             SubCategoryProductsScreen(
                 mainCategory = main,
                 subCategory = sub,
-                favoritesViewModel = favoritesViewModel, // 傳同一個
+                favoritesViewModel = favoritesViewModel,
+                bagViewModel = bagViewModel,
                 onProductClicked = { productId ->
                     navController.navigate(
                         Screen.ProductDetailScreen.createRoute(productId),
@@ -117,7 +121,7 @@ fun NavGraph(
             )
         }
 
-        // SuggestionScreen
+        // Suggestion List
         composable(Screen.SuggestionScreen.route) {
             SuggestionScreen(
                 onSuggestionClicked = { suggestion ->
@@ -141,10 +145,10 @@ fun NavGraph(
                 ),
         ) { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query") ?: ""
-
             SearchScreen(
                 query = query,
-                favoritesViewModel = favoritesViewModel, // 傳同一個
+                favoritesViewModel = favoritesViewModel,
+                bagViewModel = bagViewModel,
                 onProductClicked = { productId ->
                     navController.navigate(
                         Screen.ProductDetailScreen.createRoute(productId),
@@ -171,16 +175,28 @@ fun NavGraph(
             )
         }
 
-        // Favorites
+        // FavoritesScreen
         composable(Screen.FavoritesScreen.route) {
-            // 必須顯式傳入 NavGraph scope 裡的 favoritesViewModel
-            FavoritesScreen(viewModel = favoritesViewModel)
+            // 同時把 favoritesViewModel, bagViewModel 傳進去
+            FavoritesScreen(
+                favoritesViewModel = favoritesViewModel,
+                bagViewModel = bagViewModel,
+            )
         }
 
-        // Bag, Account (沒用到 favoritesViewModel 就不用傳)
-        composable(Screen.BagScreen.route) { BagScreen() }
+        // BagScreen
+        composable(Screen.BagScreen.route) {
+            BagScreen(
+                favoritesViewModel = favoritesViewModel, // <-- 同樣傳 favoritesViewModel
+                bagViewModel = bagViewModel, // <-- 傳 bagViewModel
+            )
+        }
+
+        // Account ...
         composable(Screen.AccountScreen.route) {
-            AccountScreen(authViewModel = authViewModel)
+            AccountScreen(
+                authViewModel = authViewModel,
+            )
         }
     }
 }

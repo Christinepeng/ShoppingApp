@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.layout.ContentScale
@@ -20,15 +17,22 @@ import com.example.shoppingapp.model.Product
 @Composable
 fun ProductItem(
     product: Product,
+    // Favorites
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
+    // Bag
+    bagQuantity: Int = 0,
+    onAddToBagClick: (() -> Unit)? = null,
+    onIncrementClick: (() -> Unit)? = null,
+    onDecrementClick: (() -> Unit)? = null,
+    // 整個 item 被點擊 -> 進商品詳情
     onClick: () -> Unit,
 ) {
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable { onClick() } // 整個區塊可點選進入詳情
+                .clickable { onClick() }
                 .padding(8.dp),
     ) {
         Row(
@@ -49,10 +53,11 @@ fun ProductItem(
                 contentScale = ContentScale.Crop,
             )
 
+            // 中間區域：商品文字 + Add to bag / - n +
             Column(
                 modifier =
                     Modifier
-                        .weight(1f) // 使文字區域占用剩餘空間
+                        .weight(1f)
                         .padding(vertical = 4.dp),
             ) {
                 Text(
@@ -64,16 +69,53 @@ fun ProductItem(
                     text = "Price: $${product.price}",
                     style = MaterialTheme.typography.bodyMedium,
                 )
+
+                // Bag UI
+                Spacer(modifier = Modifier.height(8.dp))
+                if (bagQuantity == 0) {
+                    // 顯示 "Add to bag" 按鈕
+                    Button(
+                        onClick = { onAddToBagClick?.invoke() },
+                        enabled = onAddToBagClick != null,
+                    ) {
+                        Text("Add to bag")
+                    }
+                } else {
+                    // 顯示 "- bagQuantity +"
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        IconButton(
+                            onClick = { onDecrementClick?.invoke() },
+                            enabled = onDecrementClick != null,
+                        ) {
+                            Text("-")
+                        }
+                        Text(
+                            bagQuantity.toString(),
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                        )
+                        IconButton(
+                            onClick = { onIncrementClick?.invoke() },
+                            enabled = onIncrementClick != null,
+                        ) {
+                            Text("+")
+                        }
+                    }
+                }
             }
 
-            // 右上角的愛心按鈕
-            IconButton(
-                onClick = onFavoriteClick,
-            ) {
+            // 右上角: 愛心按鈕 (Favorites)
+            IconButton(onClick = onFavoriteClick) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (isFavorite) androidx.compose.ui.graphics.Color.Red else androidx.compose.ui.graphics.Color.Gray,
+                    tint =
+                        if (isFavorite) {
+                            androidx.compose.ui.graphics.Color.Red
+                        } else {
+                            androidx.compose.ui.graphics.Color.Gray
+                        },
                 )
             }
         }
