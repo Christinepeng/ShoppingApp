@@ -192,13 +192,16 @@ fun NavGraph(
             )
         }
 
-        // Account
+        // AccountScreen
         composable(Screen.AccountScreen.route) {
             AccountScreen(
                 authViewModel = authViewModel,
                 onItemClicked = { route ->
-                    // 點擊其中一項 -> 導航到對應 route
                     navController.navigate(route)
+                },
+                onNavigateToAuth = {
+                    // 未登入時 -> 跳轉 AuthScreen
+                    navController.navigate(Screen.AuthScreen.route)
                 },
             )
         }
