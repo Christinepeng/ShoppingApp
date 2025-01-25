@@ -44,4 +44,17 @@ sealed class Screen(
             subCategory: String,
         ): String = "subCategoryProductsScreen?main=$mainCategory&sub=$subCategory"
     }
+
+    // Account tab
+    object PurchasesReturnsScreen : Screen("purchasesReturnsScreen")
+
+    object StarRewardsScreen : Screen("starRewardsScreen")
+
+    object GetHelpFeedbackScreen : Screen("helpFeedbackScreen")
+
+    object WalletScreen : Screen("walletScreen")
+
+    object ProfileScreen : Screen("profileScreen")
+
+    object PrivacySettingScreen : Screen("privacySettingScreen")
 }

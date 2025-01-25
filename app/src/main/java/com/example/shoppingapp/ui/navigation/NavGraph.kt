@@ -192,11 +192,35 @@ fun NavGraph(
             )
         }
 
-        // Account ...
+        // Account
         composable(Screen.AccountScreen.route) {
             AccountScreen(
                 authViewModel = authViewModel,
+                onItemClicked = { route ->
+                    // 點擊其中一項 -> 導航到對應 route
+                    navController.navigate(route)
+                },
             )
+        }
+
+        // Account 的 6 個子頁面
+        composable(Screen.PurchasesReturnsScreen.route) {
+            PurchasesReturnsScreen()
+        }
+        composable(Screen.StarRewardsScreen.route) {
+            StarRewardsScreen()
+        }
+        composable(Screen.GetHelpFeedbackScreen.route) {
+            GetHelpFeedbackScreen()
+        }
+        composable(Screen.WalletScreen.route) {
+            WalletScreen()
+        }
+        composable(Screen.ProfileScreen.route) {
+            ProfileScreen()
+        }
+        composable(Screen.PrivacySettingScreen.route) {
+            PrivacySettingScreen()
         }
     }
 }
