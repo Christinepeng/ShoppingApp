@@ -47,7 +47,7 @@ fun AuthScreen(
                     .padding(paddingValues),
         ) {
             Text(
-                text = if (isSignUp) "註冊" else "登入",
+                text = if (isSignUp) "Sign Up" else "Sign In",
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -61,7 +61,7 @@ fun AuthScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("密碼") },
+                label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -76,11 +76,11 @@ fun AuthScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = if (isSignUp) "註冊" else "登入")
+                Text(text = if (isSignUp) "Sign Up" else "Sign In")
             }
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = { isSignUp = !isSignUp }) {
-                Text(text = if (isSignUp) "已有帳號？登入" else "沒有帳號？註冊")
+                Text(text = if (isSignUp) "Already have an account? Sign in" else "Don't have an account? Sign up")
             }
 
             if (authState is AuthState.EmailVerificationSent) {
