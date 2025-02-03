@@ -1,11 +1,15 @@
 package com.example.shoppingapp.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.example.shoppingapp.R
 import com.example.shoppingapp.ui.components.SearchContent
 import com.example.shoppingapp.viewmodel.AuthState
 import com.example.shoppingapp.viewmodel.AuthViewModel
@@ -18,8 +22,14 @@ fun HomeScreen(
     authViewModel: AuthViewModel,
 ) {
     val authState by authViewModel.authState.collectAsState()
+    val scrollState = rememberScrollState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState), // 加入捲動效果
+    ) {
         SearchContent(
             query = "",
             onQueryChanged = {},
@@ -39,6 +49,15 @@ fun HomeScreen(
                 GuestSection(onNavigateToAuth = onNavigateToAuth)
             }
         }
+
+        AsyncImage(
+            model = R.drawable.shopping_background,
+            contentDescription = "Long Image",
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+        )
     }
 }
 
