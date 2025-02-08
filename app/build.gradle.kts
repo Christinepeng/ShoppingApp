@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.material3)
 
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.coil.compose.v222)
 
     // Firebase Authentication
     implementation(libs.firebase.auth.ktx)

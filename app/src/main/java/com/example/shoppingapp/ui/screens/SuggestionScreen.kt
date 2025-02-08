@@ -39,7 +39,7 @@ fun SuggestionScreen(onSuggestionClicked: (String) -> Unit) {
         )
 
         if (suggestions.isEmpty()) {
-            Text(text = "original string")
+            Text(text = "")
         } else {
             Text(
                 text = "Suggestions for \"$query\"",
