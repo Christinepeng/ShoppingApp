@@ -19,7 +19,7 @@
 ---
 
 ## **📱 Screenshots**
-| Home Screen | Shopping Screen | Favorite Screen |
+| Home Screen | Shop Screen | Favorite Screen |
 |-------------|-----------------|-----------------|
 | ![Image](https://github.com/user-attachments/assets/1b4c6c31-6d52-49c1-9464-acbed2966a76) | ![Image](https://github.com/user-attachments/assets/6a51e3f0-f3fe-4d72-a6cd-dbea0e08fef3) | ![Image](https://github.com/user-attachments/assets/87750810-668e-45ff-b860-6e52df398490) |
 
