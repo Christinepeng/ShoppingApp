@@ -6,15 +6,15 @@
 ---
 
 ## **📌 Features**  
-✔ **Modern UI with Jetpack Compose** – Responsive and dynamic interface  
-✔ **MVVM Architecture** – Clean separation of concerns and code reusability  
-✔ **Authentication** – Supports Firebase email-password login  
-✔ **Product Catalog** – Displays products with search and filtering  
-✔ **Shopping Cart** – Add and remove items easily  
-✔ **API Integration** – Uses **Retrofit** and **Coroutines** for seamless data fetching  
-✔ **Local Storage** – Implements **Room Database** for offline support  
-✔ **Barcode Scanning** – Built-in support for product barcode scanning  
-✔ **Testing** – Includes **unit, integration, and UI tests** with JUnit & Mockito  
+- **Modern UI with Jetpack Compose** – Responsive and dynamic interface  
+- **MVVM Architecture** – Clean separation of concerns and code reusability  
+- **Authentication** – Supports Firebase email-password login  
+- **Product Catalog** – Displays products with search and filtering  
+- **Shopping Cart** – Add and remove items easily  
+- **API Integration** – Uses **Retrofit** and **Coroutines** for seamless data fetching  
+- **Local Storage** – Implements **Room Database** for offline support  
+- **Barcode Scanning** – Built-in support for product barcode scanning  
+- **Testing** – Includes **unit, integration, and UI tests** with JUnit & Mockito  
 
 ---
 
